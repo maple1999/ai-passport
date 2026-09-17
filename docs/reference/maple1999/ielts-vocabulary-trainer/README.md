@@ -4,11 +4,21 @@
 
 # IELTS Vocabulary Trainer Plan
 
-Status: planned, not implemented. This document is the handoff specification for future development on another computer.
+Status: MVP implemented; hardware networking and interaction acceptance remain pending. This document records both the implemented baseline and the intended follow-up scope.
 
 ## Product goal
 
 Add an IELTS-focused vocabulary trainer to AI Passport. The Android phone provides Internet access through a 2.4 GHz Wi-Fi hotspot. The device displays words, plays pronunciations, and sends study actions to a server. The server owns the word lists, learning schedule, progress, and statistics. A browser-based management interface lets the learner inspect progress and choose word lists.
+
+## Implemented MVP baseline
+
+- The main menu's Display entry is replaced by IELTS. Its LVGL page fetches at most 10 cards and implements reveal, known, again, previous-card navigation, session completion, and a persisted audio preference.
+- Wi-Fi, HTTPS, JSON parsing, activation, and progress submission run outside button callbacks. The device is configured over the existing USB serial channel; hotspot and service credentials are stored in NVS rather than source code.
+- `services/vocabulary` provides a single-user FastAPI/SQLite service with hashed device tokens, bounded sessions, idempotent result updates and corrections, a small project-authored academic starter list, and a token-protected progress page.
+- The Docker service binds only to `127.0.0.1:18081` so an existing reverse proxy can expose it without claiming another public port.
+- Host tests cover the button state machine and the main server authorization, scheduling, correction, and idempotency paths.
+
+Pronunciation playback, a licensed full IELTS list, durable device-side offline event storage, word-list selection, and full hardware acceptance are not included in this MVP.
 
 The device remains a thin client. It may keep a small session cache and a retry queue so a temporary network loss does not lose progress, but it does not become the authoritative vocabulary database.
 

@@ -6,6 +6,8 @@
 
 ## Unreleased
 
+- Replaced the Display menu demo with an IELTS vocabulary MVP. The device connects through a provisioned phone hotspot, fetches bounded study sessions over HTTPS, supports reveal/known/again navigation, stores its audio preference, and submits idempotent progress updates from a worker task. Added a locally provisioned FastAPI/SQLite service, a token-protected progress dashboard, isolated Docker deployment files, and host coverage for device and server state transitions. Pronunciation playback, a licensed full IELTS list, and durable offline event storage remain follow-up work.
+
 - Restored a page-scoped PPT Remote using the standard NimBLE HID keyboard service. It pairs as `PPT-Remote`, sends previous/next slide, cross-platform start-slideshow, and Escape shortcuts from the three hardware buttons, and releases Bluetooth resources when leaving the page.
 
 - Added a combined Sound and Voice ASR experience to the existing demo menu. The Sound page measures ambient microphone level, while Voice ASR records up to eight seconds into a dedicated non-protected Flash partition and streams the WAV file to SiliconFlow's `XingChenAGI/XingChenASR-V3.2-Ultra` model. Added local USB provisioning for Wi-Fi and API credentials without embedding secrets in firmware or source control.

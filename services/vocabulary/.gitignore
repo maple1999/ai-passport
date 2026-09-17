@@ -1,0 +1,7 @@
+.env
+data/
+*.sqlite3
+__pycache__/
+*.py[cod]
+vendor/*
+!vendor/.gitkeep

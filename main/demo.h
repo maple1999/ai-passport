@@ -45,3 +45,7 @@ void demo_asr_enter(void); void demo_asr_exit(void);
 void demo_asr_key(bsp_btn_t btn, bsp_btn_ev_t ev);
 bool demo_asr_can_exit(void);
 void demo_asr_service_start(void);
+
+void demo_vocabulary_enter(void); void demo_vocabulary_exit(void);
+void demo_vocabulary_key(bsp_btn_t btn, bsp_btn_ev_t ev);
+bool demo_vocabulary_can_exit(void);

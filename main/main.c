@@ -22,7 +22,8 @@ static const char *TAG = "main";
 static const demo_entry_t DEMOS[] = {
     { "Sound",   demo_sound_meter_enter, demo_sound_meter_exit, demo_sound_meter_key, NULL },
     { "Voice ASR", demo_asr_enter, demo_asr_exit, demo_asr_key, demo_asr_can_exit },
-    { "Display", demo_display_enter, demo_display_exit, demo_display_key, NULL },
+    { "IELTS", demo_vocabulary_enter, demo_vocabulary_exit,
+      demo_vocabulary_key, demo_vocabulary_can_exit },
     { "Button",  demo_button_enter,  demo_button_exit,  demo_button_key, NULL },
     { "Audio",   demo_audio_enter,   demo_audio_exit,   demo_audio_key, NULL },
     { "Battery", demo_battery_enter, demo_battery_exit, demo_battery_key, NULL },
@@ -139,7 +140,7 @@ void app_main(void) {
     bool battery_ok = (bsp_battery_init() == ESP_OK);
     s_ok[0] = audio_ok;                                // Sound
     s_ok[1] = audio_ok;                                // Voice ASR
-    s_ok[2] = true;                                    // Display 已确认可用
+    s_ok[2] = true;                                    // IELTS（配置错误在页内提示）
     s_ok[3] = button_ok;
     s_ok[4] = audio_ok;
     s_ok[5] = battery_ok;

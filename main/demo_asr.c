@@ -11,6 +11,7 @@
 #include "bsp_display.h"
 #include "font_source_han_sans_sc_14_gb2312.h"
 #include "ui_pixel.h"
+#include "vocabulary_client.h"
 
 #include "cJSON.h"
 #include "driver/usb_serial_jtag.h"
@@ -245,6 +246,7 @@ static void config_task(void *arg)
     size_t used = 0;
     uint8_t input[64];
     const char prefix[] = "ASR_CONFIG_V1 ";
+    const char vocabulary_prefix[] = "VOCAB_CONFIG_V1 ";
 
     for (;;) {
         int count = usb_serial_jtag_read_bytes(input, sizeof(input),
@@ -257,6 +259,13 @@ static void config_task(void *arg)
                 if (used > sizeof(prefix) - 1 &&
                     memcmp(line, prefix, sizeof(prefix) - 1) == 0) {
                     handle_config_frame(line + sizeof(prefix) - 1);
+                } else if (used > sizeof(vocabulary_prefix) - 1 &&
+                           memcmp(line, vocabulary_prefix,
+                                  sizeof(vocabulary_prefix) - 1) == 0) {
+                    esp_err_t err = vocabulary_client_store_config_frame(
+                        line + sizeof(vocabulary_prefix) - 1);
+                    serial_write_line(err == ESP_OK ? "VOCAB_CONFIG_V1 OK\n"
+                                                    : "VOCAB_CONFIG_V1 ERROR invalid_config\n");
                 }
                 secure_clear(line, used);
                 used = 0;
