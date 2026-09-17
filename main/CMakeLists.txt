@@ -9,7 +9,16 @@ idf_component_register(
          "demo_radio.c"
          "demo_wifi.c"
          "demo_ble.c"
+         "demo_ppt_remote.c"
+         "ppt_hid.c"
          "demo_low_power.c"
+         "demo_sound_meter.c"
+         "sound_meter_model.c"
+         "demo_asr.c"
+         "asr_audio.c"
+         "font_source_han_sans_sc_14_gb2312.c"
     INCLUDE_DIRS "."
-    REQUIRES bsp bt esp_event esp_hw_support esp_netif esp_timer esp_wifi nvs_flash
+    REQUIRES bsp bt esp_driver_usb_serial_jtag esp_event esp_hid esp_http_client
+             esp_hw_support esp_netif esp_partition esp_timer esp-tls esp_wifi
+             json mbedtls nvs_flash
 )

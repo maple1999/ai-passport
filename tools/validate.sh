@@ -28,6 +28,14 @@ run_static_checks() {
         tests/test_ui_pixel_math.c main/ui_pixel_math.c \
         -o "${test_dir}/test_ui_pixel_math"
     "${test_dir}/test_ui_pixel_math"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_sound_meter_model.c main/sound_meter_model.c \
+        -o "${test_dir}/test_sound_meter_model"
+    "${test_dir}/test_sound_meter_model"
+    "${CC:-cc}" -std=c11 -Wall -Wextra -Werror -Imain \
+        tests/test_asr_audio.c main/asr_audio.c \
+        -o "${test_dir}/test_asr_audio"
+    "${test_dir}/test_asr_audio"
     python3 tests/test_verify_firmware.py
     rm -rf "${test_dir}"
     echo "Host tests: PASS"

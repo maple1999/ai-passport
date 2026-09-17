@@ -16,8 +16,11 @@
 lv_obj_t *ui_pixel_screen_create(const char *title);
 lv_obj_t *ui_pixel_panel_create(lv_obj_t *parent, int x, int y, int w, int h,
                                 uint32_t color);
+lv_obj_t *ui_pixel_panel_create_ex(lv_obj_t *parent, int x, int y, int w, int h,
+                                   uint32_t color, lv_obj_t **shadow_out);
 lv_obj_t *ui_pixel_label(lv_obj_t *parent, const char *text,
                          const lv_font_t *font, uint32_t color);
 lv_obj_t *ui_pixel_mascot_create(lv_obj_t *parent, int x, int y);
 void ui_pixel_mascot_jump(lv_obj_t *mascot);
+void ui_pixel_mascot_set_zone(lv_obj_t *mascot, int zone, bool alarm);
 void ui_pixel_set_selected(lv_obj_t *panel, bool selected, bool enabled);

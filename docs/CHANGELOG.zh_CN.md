@@ -6,6 +6,10 @@
 
 ## Unreleased
 
+- 恢复按页面启停的 PPT Remote，使用标准 NimBLE HID 键盘服务；设备以 `PPT-Remote` 配对，三个硬件按键可发送上一页、下一页、跨平台开始放映及退出放映快捷键，离开页面时释放蓝牙资源。
+
+- 在现有演示菜单中融合环境噪声检测与语音识别：Sound 页面通过麦克风测量环境音量；Voice ASR 页面把最长八秒录音写入独立且不受保护的 Flash 分区，再以 WAV 流式上传到硅基流动的 `XingChenAGI/XingChenASR-V3.2-Ultra` 模型。新增本地 USB 配置流程写入 Wi-Fi 与 API 凭据，固件及源码均不内置密钥。
+
 - 加入厂家为优特利 520mAh 电芯生成的 80 字节 CW2017 profile，并实现内容与更新标志检查、写入后校验、规定的重启时序以及有上限的 SOC 就绪等待。
 
 - 扩充环境引导文档：新增乐鑫 Git 服务镜像（`git.espressif.com.cn`）作为中国大陆首选线路，覆盖 ESP-IDF v5.5.3 及其子模块；补充子模块长等待/超时处理、原地修复，以及 `esp32-wifi-lib` 等大仓的按钉死 commit 浅取；提示按仓库残留的 Jihulab `insteadOf` 旧配置；并把官方离线 release 压缩包加入兜底方案（经验来自 `esp-mosaico/esp-mosaico-vibe`）。

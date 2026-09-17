@@ -15,17 +15,20 @@
 #include "lvgl.h"
 #include "esp_log.h"
 #include "esp_sleep.h"
+#include "demo_radio.h"
 
 static const char *TAG = "main";
 
 static const demo_entry_t DEMOS[] = {
-    { "Display", demo_display_enter, demo_display_exit, demo_display_key },
-    { "Button",  demo_button_enter,  demo_button_exit,  demo_button_key  },
-    { "Audio",   demo_audio_enter,   demo_audio_exit,   demo_audio_key   },
-    { "Battery", demo_battery_enter, demo_battery_exit, demo_battery_key },
-    { "Wi-Fi",   demo_wifi_enter,    demo_wifi_exit,    demo_wifi_key    },
-    { "BLE",     demo_ble_enter,     demo_ble_exit,     demo_ble_key     },
-    { "Low Power", demo_low_power_enter, demo_low_power_exit, demo_low_power_key },
+    { "Sound",   demo_sound_meter_enter, demo_sound_meter_exit, demo_sound_meter_key, NULL },
+    { "Voice ASR", demo_asr_enter, demo_asr_exit, demo_asr_key, demo_asr_can_exit },
+    { "Display", demo_display_enter, demo_display_exit, demo_display_key, NULL },
+    { "Button",  demo_button_enter,  demo_button_exit,  demo_button_key, NULL },
+    { "Audio",   demo_audio_enter,   demo_audio_exit,   demo_audio_key, NULL },
+    { "Battery", demo_battery_enter, demo_battery_exit, demo_battery_key, NULL },
+    { "Wi-Fi",   demo_wifi_enter,    demo_wifi_exit,    demo_wifi_key, NULL },
+    { "PPT Remote", demo_ppt_remote_enter, demo_ppt_remote_exit, demo_ppt_remote_key, NULL },
+    { "Low Power", demo_low_power_enter, demo_low_power_exit, demo_low_power_key, NULL },
 };
 #define DEMO_COUNT (sizeof(DEMOS) / sizeof(DEMOS[0]))
 
@@ -54,16 +57,18 @@ static void menu_build(void) {
     s_menu_scr = ui_pixel_screen_create("FoloToy");
 
     for (size_t i = 0; i < DEMO_COUNT; i++) {
-        int x = 11 + (int)(i % 2) * 112;
-        int y = 52 + (int)(i / 2) * 47;
-        s_cards[i] = ui_pixel_panel_create(s_menu_scr, x, y, 102, 40, UI_PAPER);
+        int x = 6 + (int)(i % 3) * 78;
+        int y = 52 + (int)(i / 3) * 57;
+        s_cards[i] = ui_pixel_panel_create(s_menu_scr, x, y, 70, 48, UI_PAPER);
         s_rows[i] = lv_label_create(s_cards[i]);
+        lv_obj_set_width(s_rows[i], 62);
         lv_obj_set_style_text_font(s_rows[i], &lv_font_montserrat_14, 0);
         lv_obj_set_style_text_align(s_rows[i], LV_TEXT_ALIGN_CENTER, 0);
+        lv_label_set_long_mode(s_rows[i], LV_LABEL_LONG_WRAP);
         lv_obj_center(s_rows[i]);
     }
 
-    s_mascot = ui_pixel_mascot_create(s_menu_scr, 101, 242);
+    s_mascot = ui_pixel_mascot_create(s_menu_scr, 101, 232);
 
     menu_refresh();
     lv_screen_load(s_menu_scr);
@@ -81,6 +86,11 @@ static void on_key(bsp_btn_t btn, bsp_btn_ev_t ev, void *user) {
 
     if (s_active >= 0) {
         if (btn == BSP_BTN_OK && ev == BSP_BTN_LONG) {     // 统一返回
+            if (DEMOS[s_active].can_exit && !DEMOS[s_active].can_exit()) {
+                DEMOS[s_active].key(btn, ev);
+                bsp_lvgl_unlock();
+                return;
+            }
             DEMOS[s_active].exit();
             enter_menu();
         } else {
@@ -124,16 +134,24 @@ void app_main(void) {
     bsp_display_backlight(100);
 
     // 其余外设单项失败不阻塞:菜单里标 [FAIL],其他项照常可测。
-    s_ok[0] = true;                                   // Display 已确认可用
-    s_ok[1] = (bsp_button_init(on_key, NULL) == ESP_OK);
-    s_ok[2] = (bsp_audio_init() == ESP_OK);
-    s_ok[3] = (bsp_battery_init() == ESP_OK);
-    s_ok[4] = true;                                    // 页面内按需初始化并显示错误
-    s_ok[5] = true;
+    bool button_ok = (bsp_button_init(on_key, NULL) == ESP_OK);
+    bool audio_ok = (bsp_audio_init() == ESP_OK);
+    bool battery_ok = (bsp_battery_init() == ESP_OK);
+    s_ok[0] = audio_ok;                                // Sound
+    s_ok[1] = audio_ok;                                // Voice ASR
+    s_ok[2] = true;                                    // Display 已确认可用
+    s_ok[3] = button_ok;
+    s_ok[4] = audio_ok;
+    s_ok[5] = battery_ok;
     s_ok[6] = true;
+    s_ok[7] = true;
+    s_ok[8] = true;
+
+    // ASR 的本地 USB 配置服务只接收显式协议帧，不在日志中输出凭据。
+    if (demo_radio_nvs_prepare() == ESP_OK) demo_asr_service_start();
 
     if (bsp_lvgl_lock(1000)) { enter_menu(); bsp_lvgl_unlock(); }
 
-    ESP_LOGI(TAG, "就绪:Display=%d Button=%d Audio=%d Battery=%d",
-             s_ok[0], s_ok[1], s_ok[2], s_ok[3]);
+    ESP_LOGI(TAG, "就绪:Display=1 Button=%d Audio=%d Battery=%d",
+             button_ok, audio_ok, battery_ok);
 }
