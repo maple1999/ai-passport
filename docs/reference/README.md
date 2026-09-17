@@ -51,6 +51,12 @@ The engineering rules themselves live under
 
 - [Offline Pokédex](sunny0826/offline-pokedex/README.md) — a fully offline Pokédex that embeds all 1,025 Pokémon, their sprites, and cries in the firmware.
 
+### maple1999
+
+**Application plans:**
+
+- [IELTS Vocabulary Trainer](maple1999/ielts-vocabulary-trainer/README.md) — a server-backed vocabulary trainer plan covering three-button study interactions, Android hotspot connectivity, pronunciation playback, progress scheduling, and a management web interface.
+
 ## Adding an experience entry
 
 Each release may produce **one or more** reusable, post-release learnings; each is
